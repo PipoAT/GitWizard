@@ -5,3 +5,4 @@
 - git branch
 - git status
 - git diff
+- git pull
