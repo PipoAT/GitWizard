@@ -3,3 +3,4 @@
 ### The Following Commands are supported in this application:
 - Git Log
 - Git Branch
+- Git Status
