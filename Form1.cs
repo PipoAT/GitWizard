@@ -11,6 +11,7 @@ public partial class Form1 : Form
         this.MinimizeBox = false;
         this.MaximizeBox = false;
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
+        this.Text = "GitWizard";
 
         Button btnGitLog = new Button();
         btnGitLog.Text = "Execute Git Log Command";
@@ -46,6 +47,13 @@ public partial class Form1 : Form
         btnGitPull.Width = 200;
         btnGitPull.Click += btnGitPull_Click;
         this.Controls.Add(btnGitPull);
+
+        Button btnGitInit = new Button();
+        btnGitInit.Text = "Execute Git Init Command";
+        btnGitInit.Location = new Point(0, 150);
+        btnGitInit.Width = 200;
+        btnGitInit.Click += btnGitInit_Click;
+        this.Controls.Add(btnGitInit);
 
     }
 
@@ -213,5 +221,39 @@ public partial class Form1 : Form
             }
         }
     }
+
+    private void btnGitInit_Click(object? sender, EventArgs e)
+    {
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "init",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
+    
 
 }
