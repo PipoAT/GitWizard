@@ -33,6 +33,13 @@ public partial class Form1 : Form
         btnGitStatus.Click += btnGitStatus_Click;
         this.Controls.Add(btnGitStatus);
 
+        Button btnGitDiff = new Button();
+        btnGitDiff.Text = "Execute Git Diff Command";
+        btnGitDiff.Location = new Point(0, 100);
+        btnGitDiff.Width = 200;
+        btnGitDiff.Click += btnGitDiff_Click;
+        this.Controls.Add(btnGitDiff);
+
 
     }
 
@@ -117,6 +124,39 @@ public partial class Form1 : Form
                 {
                     FileName = "git",
                     Arguments = "status",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
+
+    private void btnGitDiff_Click(object? sender, EventArgs e)
+    {
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "diff",
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
