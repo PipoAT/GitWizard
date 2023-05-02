@@ -7,4 +7,4 @@
 - git diff
 - git pull
 - git init
-- git merge [branch]
+- git merge [branch] (TEST)
