@@ -6,3 +6,4 @@
 - git status
 - git diff
 - git pull
+- git init
