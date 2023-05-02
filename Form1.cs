@@ -5,6 +5,7 @@ namespace GitFromC_;
 public partial class Form1 : Form
 {
     TextBox textBoxGitMerge = new TextBox();
+    TextBox textBoxGitBranchCreate = new TextBox();
 
     public Form1()
     {
@@ -28,6 +29,13 @@ public partial class Form1 : Form
         btnGitBranch.Width = 200;
         btnGitBranch.Click += btnGitBranch_Click;
         this.Controls.Add(btnGitBranch);
+
+        Button btnGitBranchCreate = new Button();
+        btnGitBranchCreate.Text = "Execute Git Branch [branch_name] Command";
+        btnGitBranchCreate.Location = new Point(250, 50);
+        btnGitBranchCreate.Width = 200;
+        btnGitBranchCreate.Click += btnGitBranchCreate_Click;
+        this.Controls.Add(btnGitBranchCreate);
 
         Button btnGitStatus = new Button();
         btnGitStatus.Text = "Execute Git Status Command";
@@ -70,6 +78,12 @@ public partial class Form1 : Form
         textBoxGitMerge.Location = new Point(250, 175);
         textBoxGitMerge.Width = 200;
         this.Controls.Add(textBoxGitMerge);
+
+        textBoxGitBranchCreate.PlaceholderText = "Input name of new branch...";
+        textBoxGitBranchCreate.Text = "";
+        textBoxGitBranchCreate.Location = new Point(500, 50);
+        textBoxGitBranchCreate.Width = 200;
+        this.Controls.Add(textBoxGitBranchCreate);
 
     }
 
@@ -287,6 +301,40 @@ public partial class Form1 : Form
                 {
                     FileName = "git",
                     Arguments = "merge " + branchToMergeFrom,
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
+
+    private void btnGitBranchCreate_Click(object? sender, EventArgs e)
+    {
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+                var branchToCreate = textBoxGitBranchCreate.Text;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "branch " + branchToCreate,
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
