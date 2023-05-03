@@ -11,3 +11,6 @@
 - git add -A // git add [file_name]
 - git remote add origin [URL]
 - git commit -m "[MESSAGE]"
+
+### The Following Automations are supported in this application:
+- Local Git to GitHub Auto Setup
