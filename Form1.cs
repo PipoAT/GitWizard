@@ -557,7 +557,7 @@ public partial class Form1 : Form
                 var processStartInfo = new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = "commit -m TEST",
+                    Arguments = "commit -m \"" + message + "\"",
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
