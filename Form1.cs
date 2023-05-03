@@ -8,6 +8,7 @@ public partial class Form1 : Form
     TextBox textBoxGitBranchCreate = new TextBox();
     TextBox textBoxFileName = new TextBox();
     TextBox textBoxOriginURL = new TextBox();
+    TextBox textBoxCommit = new TextBox();
 
     public Form1()
     {
@@ -132,6 +133,12 @@ public partial class Form1 : Form
         textBoxOriginURL.Location = new Point(500, 225);
         textBoxOriginURL.Width = 200;
         this.Controls.Add(textBoxOriginURL);
+
+        textBoxCommit.PlaceholderText = "Input Commit Message...";
+        textBoxCommit.Text = "";
+        textBoxCommit.Location = new Point(250, 250);
+        textBoxCommit.Width = 200;
+        this.Controls.Add(textBoxCommit);
 
     }
 
@@ -544,12 +551,13 @@ public partial class Form1 : Form
             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
             {
                 var workingDirectory = folderBrowserDialog.SelectedPath;
+                var message = textBoxCommit.Text;
 
                 // Run the Git command using the selected working directory
                 var processStartInfo = new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = "commit -m 'Test'",
+                    Arguments = "commit -m" + message,
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
