@@ -101,6 +101,13 @@ public partial class Form1 : Form
         btnGitAddOrigin.Width = 200;
         btnGitAddOrigin.Click += btnGitAddOrigin_Click;
         this.Controls.Add(btnGitAddOrigin);
+
+        Button btnGitCommit = new Button();
+        btnGitCommit.Text = "Execute Git Commit Command";
+        btnGitCommit.Location = new Point(0, 250);
+        btnGitCommit.Width = 200;
+        btnGitCommit.Click += btnGitCommit_Click;
+        this.Controls.Add(btnGitCommit);
         
         textBoxGitMerge.PlaceholderText = "Input branch to merge from...";
         textBoxGitMerge.Text = "";
@@ -528,7 +535,38 @@ public partial class Form1 : Form
         }
     }
 
+    private void btnGitCommit_Click(object? sender, EventArgs e) {
 
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "commit -m 'Test'",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
 }
 
 
@@ -539,15 +577,6 @@ public partial class Form1 : Form
 
 //======= IN PROGRESS ===========================================//
 
-
-//                 using (var process = new Process())
-//                 {
-//                     process.StartInfo = processGitAdd;
-//                     process.Start();
-
-//                     var output = process.StandardOutput.ReadToEnd();
-//                     MessageBox.Show(output);
-//                 }
 
 //                 // GIT COMMIT
 //                 var processGitCommit = new ProcessStartInfo
@@ -589,27 +618,3 @@ public partial class Form1 : Form
 //                     MessageBox.Show(output);
 //                 }
 
-//                 // GIT PUSH
-//                 var processGitPush = new ProcessStartInfo
-//                 {
-//                     FileName = "git",
-//                     Arguments = "push -u origin main",
-//                     WorkingDirectory = workingDirectory,
-//                     RedirectStandardOutput = true,
-//                     UseShellExecute = false,
-//                     CreateNoWindow = true
-//                 };
-
-//                 using (var process = new Process())
-//                 {
-//                     process.StartInfo = processGitPush;
-//                     process.Start();
-
-//                     var output = process.StandardOutput.ReadToEnd();
-//                     MessageBox.Show(output);
-//                 }
-//             }
-//         }
-
-//     }
-// }
