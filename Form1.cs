@@ -7,6 +7,7 @@ public partial class Form1 : Form
     TextBox textBoxGitMerge = new TextBox();
     TextBox textBoxGitBranchCreate = new TextBox();
     TextBox textBoxFileName = new TextBox();
+    TextBox textBoxOriginURL = new TextBox();
 
     public Form1()
     {
@@ -59,6 +60,13 @@ public partial class Form1 : Form
         btnGitPull.Click += btnGitPull_Click;
         this.Controls.Add(btnGitPull);
 
+        Button btnGitPush = new Button();
+        btnGitPush.Text = "Execute Git Push Command";
+        btnGitPush.Location = new Point(250, 125);
+        btnGitPush.Width = 200;
+        btnGitPush.Click += btnGitPush_Click;
+        this.Controls.Add(btnGitPush);
+
         Button btnGitInit = new Button();
         btnGitInit.Text = "Execute Git Init Command";
         btnGitInit.Location = new Point(0, 150);
@@ -81,19 +89,18 @@ public partial class Form1 : Form
         this.Controls.Add(btnGitAddAllFiles);
 
         Button btnGitAddFiles = new Button();
-        btnGitAddFiles.Text = "Execute Git Add -A Command";
+        btnGitAddFiles.Text = "Execute Git Add [file] Command";
         btnGitAddFiles.Location = new Point(250, 200);
         btnGitAddFiles.Width = 200;
         btnGitAddFiles.Click += btnGitAddFiles_Click;
         this.Controls.Add(btnGitAddFiles);
 
-        // Button btnGitToGitHub = new Button();
-        // btnGitToGitHub.Text = "Setup GitHub Repo";
-        // btnGitToGitHub.Location = new Point(0, 300);
-        // btnGitToGitHub.Width = 200;
-        // btnGitToGitHub.Click += btnGitToGitHub_Click;
-        // this.Controls.Add(btnGitToGitHub);
-
+        Button btnGitAddOrigin = new Button();
+        btnGitAddOrigin.Text = "Execute Git Add Remote Origin Command";
+        btnGitAddOrigin.Location = new Point(0, 225);
+        btnGitAddOrigin.Width = 200;
+        btnGitAddOrigin.Click += btnGitAddOrigin_Click;
+        this.Controls.Add(btnGitAddOrigin);
         
         textBoxGitMerge.PlaceholderText = "Input branch to merge from...";
         textBoxGitMerge.Text = "";
@@ -112,6 +119,12 @@ public partial class Form1 : Form
         textBoxFileName.Location = new Point(500, 200);
         textBoxFileName.Width = 200;
         this.Controls.Add(textBoxFileName);
+
+        textBoxOriginURL.PlaceholderText = "Input Remote Origin URL...";
+        textBoxOriginURL.Text = "";
+        textBoxOriginURL.Location = new Point(500, 225);
+        textBoxOriginURL.Width = 200;
+        this.Controls.Add(textBoxOriginURL);
 
     }
 
@@ -280,6 +293,39 @@ public partial class Form1 : Form
         }
     }
 
+    private void btnGitPush_Click(object? sender, EventArgs e)
+    {
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "push -u origin main", // later on allow for a different branch to be pushed to
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
+
     private void btnGitInit_Click(object? sender, EventArgs e)
     {
         using (var folderBrowserDialog = new FolderBrowserDialog())
@@ -381,7 +427,6 @@ public partial class Form1 : Form
         }
     }
     
-
     private void btnGitAddAllFiles_Click(object? sender, EventArgs e) {
 
         using (var folderBrowserDialog = new FolderBrowserDialog())
@@ -448,6 +493,42 @@ public partial class Form1 : Form
             }
         }
     }
+
+    private void btnGitAddOrigin_Click(object? sender, EventArgs e) {
+
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+                var URL = textBoxOriginURL.Text;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "remote add origin " + URL,
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
+
+
 }
 
 
@@ -458,53 +539,6 @@ public partial class Form1 : Form
 
 //======= IN PROGRESS ===========================================//
 
-//     private void btnGitToGitHub_Click(object? sender, EventArgs e) {
-//         gitToGitHub();
-//     }
-
-//     public void gitToGitHub() {
-//         // create the local git
-//         using (var folderBrowserDialog = new FolderBrowserDialog())
-//         {
-//             folderBrowserDialog.Description = "Select the working directory for Git command execution.";
-
-//             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
-//             {
-//                 var workingDirectory = folderBrowserDialog.SelectedPath;
-//                 var origin = textBoxGitBranchCreate.Text;
-//                 var message = "Test Commit";
-
-//                 // Run the Git command using the selected working directory
-//                 // GIT INIT
-//                 var processGitInit = new ProcessStartInfo
-//                 {
-//                     FileName = "git",
-//                     Arguments = "init",
-//                     WorkingDirectory = workingDirectory,
-//                     RedirectStandardOutput = true,
-//                     UseShellExecute = false,
-//                     CreateNoWindow = true
-//                 };
-
-//                 using (var process = new Process())
-//                 {
-//                     process.StartInfo = processGitInit;
-//                     process.Start();
-
-//                     var output = process.StandardOutput.ReadToEnd();
-//                     MessageBox.Show(output);
-//                 }
-
-//                 // GIT ADD
-//                 var processGitAdd = new ProcessStartInfo
-//                 {
-//                     FileName = "git",
-//                     Arguments = "add -A",
-//                     WorkingDirectory = workingDirectory,
-//                     RedirectStandardOutput = true,
-//                     UseShellExecute = false,
-//                     CreateNoWindow = true
-//                 };
 
 //                 using (var process = new Process())
 //                 {
@@ -549,26 +583,6 @@ public partial class Form1 : Form
 //                 using (var process = new Process())
 //                 {
 //                     process.StartInfo = processGitBranch;
-//                     process.Start();
-
-//                     var output = process.StandardOutput.ReadToEnd();
-//                     MessageBox.Show(output);
-//                 }
-
-//                 // GIT BRANCH MAIN
-//                 var processGitOrigin = new ProcessStartInfo
-//                 {
-//                     FileName = "git",
-//                     Arguments = "remote add origin https://github.com/PipoAT/TestRepo.git",
-//                     WorkingDirectory = workingDirectory,
-//                     RedirectStandardOutput = true,
-//                     UseShellExecute = false,
-//                     CreateNoWindow = true
-//                 };
-
-//                 using (var process = new Process())
-//                 {
-//                     process.StartInfo = processGitOrigin;
 //                     process.Start();
 
 //                     var output = process.StandardOutput.ReadToEnd();
