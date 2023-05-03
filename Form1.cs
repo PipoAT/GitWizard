@@ -6,6 +6,7 @@ public partial class Form1 : Form
 {
     TextBox textBoxGitMerge = new TextBox();
     TextBox textBoxGitBranchCreate = new TextBox();
+    TextBox textBoxFileName = new TextBox();
 
     public Form1()
     {
@@ -72,6 +73,27 @@ public partial class Form1 : Form
         btnGitMerge.Click += btnGitMerge_Click;
         this.Controls.Add(btnGitMerge);
 
+        Button btnGitAddAllFiles = new Button();
+        btnGitAddAllFiles.Text = "Execute Git Add -A Command";
+        btnGitAddAllFiles.Location = new Point(0, 200);
+        btnGitAddAllFiles.Width = 200;
+        btnGitAddAllFiles.Click += btnGitAddAllFiles_Click;
+        this.Controls.Add(btnGitAddAllFiles);
+
+        Button btnGitAddFiles = new Button();
+        btnGitAddFiles.Text = "Execute Git Add -A Command";
+        btnGitAddFiles.Location = new Point(250, 200);
+        btnGitAddFiles.Width = 200;
+        btnGitAddFiles.Click += btnGitAddFiles_Click;
+        this.Controls.Add(btnGitAddFiles);
+
+        // Button btnGitToGitHub = new Button();
+        // btnGitToGitHub.Text = "Setup GitHub Repo";
+        // btnGitToGitHub.Location = new Point(0, 300);
+        // btnGitToGitHub.Width = 200;
+        // btnGitToGitHub.Click += btnGitToGitHub_Click;
+        // this.Controls.Add(btnGitToGitHub);
+
         
         textBoxGitMerge.PlaceholderText = "Input branch to merge from...";
         textBoxGitMerge.Text = "";
@@ -84,6 +106,12 @@ public partial class Form1 : Form
         textBoxGitBranchCreate.Location = new Point(500, 50);
         textBoxGitBranchCreate.Width = 200;
         this.Controls.Add(textBoxGitBranchCreate);
+
+        textBoxFileName.PlaceholderText = "Input name of file...";
+        textBoxFileName.Text = "";
+        textBoxFileName.Location = new Point(500, 200);
+        textBoxFileName.Width = 200;
+        this.Controls.Add(textBoxFileName);
 
     }
 
@@ -353,5 +381,221 @@ public partial class Form1 : Form
         }
     }
     
-    
+
+    private void btnGitAddAllFiles_Click(object? sender, EventArgs e) {
+
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "add -A",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
+
+    private void btnGitAddFiles_Click(object? sender, EventArgs e) {
+
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+                var selectedFile = textBoxFileName.Text;
+
+                // Run the Git command using the selected working directory
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = "git",
+                    Arguments = "add " + selectedFile,
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                }
+            }
+        }
+    }
 }
+
+
+
+
+
+
+
+//======= IN PROGRESS ===========================================//
+
+//     private void btnGitToGitHub_Click(object? sender, EventArgs e) {
+//         gitToGitHub();
+//     }
+
+//     public void gitToGitHub() {
+//         // create the local git
+//         using (var folderBrowserDialog = new FolderBrowserDialog())
+//         {
+//             folderBrowserDialog.Description = "Select the working directory for Git command execution.";
+
+//             if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+//             {
+//                 var workingDirectory = folderBrowserDialog.SelectedPath;
+//                 var origin = textBoxGitBranchCreate.Text;
+//                 var message = "Test Commit";
+
+//                 // Run the Git command using the selected working directory
+//                 // GIT INIT
+//                 var processGitInit = new ProcessStartInfo
+//                 {
+//                     FileName = "git",
+//                     Arguments = "init",
+//                     WorkingDirectory = workingDirectory,
+//                     RedirectStandardOutput = true,
+//                     UseShellExecute = false,
+//                     CreateNoWindow = true
+//                 };
+
+//                 using (var process = new Process())
+//                 {
+//                     process.StartInfo = processGitInit;
+//                     process.Start();
+
+//                     var output = process.StandardOutput.ReadToEnd();
+//                     MessageBox.Show(output);
+//                 }
+
+//                 // GIT ADD
+//                 var processGitAdd = new ProcessStartInfo
+//                 {
+//                     FileName = "git",
+//                     Arguments = "add -A",
+//                     WorkingDirectory = workingDirectory,
+//                     RedirectStandardOutput = true,
+//                     UseShellExecute = false,
+//                     CreateNoWindow = true
+//                 };
+
+//                 using (var process = new Process())
+//                 {
+//                     process.StartInfo = processGitAdd;
+//                     process.Start();
+
+//                     var output = process.StandardOutput.ReadToEnd();
+//                     MessageBox.Show(output);
+//                 }
+
+//                 // GIT COMMIT
+//                 var processGitCommit = new ProcessStartInfo
+//                 {
+//                     FileName = "git",
+//                     Arguments = "commit -m 'Test Commit'",
+//                     WorkingDirectory = workingDirectory,
+//                     RedirectStandardOutput = true,
+//                     UseShellExecute = false,
+//                     CreateNoWindow = true
+//                 };
+
+//                 using (var process = new Process())
+//                 {
+//                     process.StartInfo = processGitCommit;
+//                     process.Start();
+
+//                     var output = process.StandardOutput.ReadToEnd();
+//                     MessageBox.Show(output);
+//                 }
+
+//                 // GIT BRANCH MAIN
+//                 var processGitBranch = new ProcessStartInfo
+//                 {
+//                     FileName = "git",
+//                     Arguments = "branch -M main",
+//                     WorkingDirectory = workingDirectory,
+//                     RedirectStandardOutput = true,
+//                     UseShellExecute = false,
+//                     CreateNoWindow = true
+//                 };
+
+//                 using (var process = new Process())
+//                 {
+//                     process.StartInfo = processGitBranch;
+//                     process.Start();
+
+//                     var output = process.StandardOutput.ReadToEnd();
+//                     MessageBox.Show(output);
+//                 }
+
+//                 // GIT BRANCH MAIN
+//                 var processGitOrigin = new ProcessStartInfo
+//                 {
+//                     FileName = "git",
+//                     Arguments = "remote add origin https://github.com/PipoAT/TestRepo.git",
+//                     WorkingDirectory = workingDirectory,
+//                     RedirectStandardOutput = true,
+//                     UseShellExecute = false,
+//                     CreateNoWindow = true
+//                 };
+
+//                 using (var process = new Process())
+//                 {
+//                     process.StartInfo = processGitOrigin;
+//                     process.Start();
+
+//                     var output = process.StandardOutput.ReadToEnd();
+//                     MessageBox.Show(output);
+//                 }
+
+//                 // GIT PUSH
+//                 var processGitPush = new ProcessStartInfo
+//                 {
+//                     FileName = "git",
+//                     Arguments = "push -u origin main",
+//                     WorkingDirectory = workingDirectory,
+//                     RedirectStandardOutput = true,
+//                     UseShellExecute = false,
+//                     CreateNoWindow = true
+//                 };
+
+//                 using (var process = new Process())
+//                 {
+//                     process.StartInfo = processGitPush;
+//                     process.Start();
+
+//                     var output = process.StandardOutput.ReadToEnd();
+//                     MessageBox.Show(output);
+//                 }
+//             }
+//         }
+
+//     }
+// }
