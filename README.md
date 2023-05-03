@@ -8,3 +8,4 @@
 - git pull
 - git init
 - git merge [branch_name]
+- git add -A // git add [file_name]
