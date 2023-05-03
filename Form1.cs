@@ -557,9 +557,10 @@ public partial class Form1 : Form
                 var processStartInfo = new ProcessStartInfo
                 {
                     FileName = "git",
-                    Arguments = "commit -m" + message,
+                    Arguments = "commit -m " + "'" + message + "'",
                     WorkingDirectory = workingDirectory,
                     RedirectStandardOutput = true,
+                    RedirectStandardError = true,
                     UseShellExecute = false,
                     CreateNoWindow = true
                 };
@@ -571,58 +572,10 @@ public partial class Form1 : Form
 
                     var output = process.StandardOutput.ReadToEnd();
                     MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
                 }
             }
         }
     }
 }
-
-
-
-
-
-
-
-//======= IN PROGRESS ===========================================//
-
-
-//                 // GIT COMMIT
-//                 var processGitCommit = new ProcessStartInfo
-//                 {
-//                     FileName = "git",
-//                     Arguments = "commit -m 'Test Commit'",
-//                     WorkingDirectory = workingDirectory,
-//                     RedirectStandardOutput = true,
-//                     UseShellExecute = false,
-//                     CreateNoWindow = true
-//                 };
-
-//                 using (var process = new Process())
-//                 {
-//                     process.StartInfo = processGitCommit;
-//                     process.Start();
-
-//                     var output = process.StandardOutput.ReadToEnd();
-//                     MessageBox.Show(output);
-//                 }
-
-//                 // GIT BRANCH MAIN
-//                 var processGitBranch = new ProcessStartInfo
-//                 {
-//                     FileName = "git",
-//                     Arguments = "branch -M main",
-//                     WorkingDirectory = workingDirectory,
-//                     RedirectStandardOutput = true,
-//                     UseShellExecute = false,
-//                     CreateNoWindow = true
-//                 };
-
-//                 using (var process = new Process())
-//                 {
-//                     process.StartInfo = processGitBranch;
-//                     process.Start();
-
-//                     var output = process.StandardOutput.ReadToEnd();
-//                     MessageBox.Show(output);
-//                 }
-
