@@ -109,7 +109,14 @@ public partial class Form1 : Form
         btnGitCommit.Width = 200;
         btnGitCommit.Click += btnGitCommit_Click;
         this.Controls.Add(btnGitCommit);
-        
+
+        Button btnrepoSetup = new Button();
+        btnrepoSetup.Text = "Local git to GitHub (AUTO)";
+        btnrepoSetup.Location = new Point(0, 300);
+        btnrepoSetup.Width = 200;
+        btnrepoSetup.Click += btnrepoSetup_Click;
+        this.Controls.Add(btnrepoSetup);
+
         textBoxGitMerge.PlaceholderText = "Input branch to merge from...";
         textBoxGitMerge.Text = "";
         textBoxGitMerge.Location = new Point(250, 175);
@@ -440,8 +447,9 @@ public partial class Form1 : Form
             }
         }
     }
-    
-    private void btnGitAddAllFiles_Click(object? sender, EventArgs e) {
+
+    private void btnGitAddAllFiles_Click(object? sender, EventArgs e)
+    {
 
         using (var folderBrowserDialog = new FolderBrowserDialog())
         {
@@ -474,7 +482,8 @@ public partial class Form1 : Form
         }
     }
 
-    private void btnGitAddFiles_Click(object? sender, EventArgs e) {
+    private void btnGitAddFiles_Click(object? sender, EventArgs e)
+    {
 
         using (var folderBrowserDialog = new FolderBrowserDialog())
         {
@@ -508,7 +517,8 @@ public partial class Form1 : Form
         }
     }
 
-    private void btnGitAddOrigin_Click(object? sender, EventArgs e) {
+    private void btnGitAddOrigin_Click(object? sender, EventArgs e)
+    {
 
         using (var folderBrowserDialog = new FolderBrowserDialog())
         {
@@ -542,7 +552,8 @@ public partial class Form1 : Form
         }
     }
 
-    private void btnGitCommit_Click(object? sender, EventArgs e) {
+    private void btnGitCommit_Click(object? sender, EventArgs e)
+    {
 
         using (var folderBrowserDialog = new FolderBrowserDialog())
         {
@@ -578,4 +589,160 @@ public partial class Form1 : Form
             }
         }
     }
+
+    private void btnrepoSetup_Click(object? sender, EventArgs e) {
+        repoSetup();
+    }
+    public void repoSetup()
+    {
+        using (var folderBrowserDialog = new FolderBrowserDialog())
+        {
+            if (folderBrowserDialog.ShowDialog() == DialogResult.OK)
+            {
+
+                var workingDirectory = folderBrowserDialog.SelectedPath;
+                var message2 = textBoxCommit.Text;
+
+                var processGitInit = new ProcessStartInfo           // git init
+                {
+                    FileName = "git",
+                    Arguments = "init",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processGitInit;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
+                }
+
+                var processGitAddAll = new ProcessStartInfo     // git add -A
+                {
+                    FileName = "git",
+                    Arguments = "add -A",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processGitAddAll;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
+                }
+
+                var processGitCommit = new ProcessStartInfo     // git commit
+                {
+                    FileName = "git",
+                    Arguments = "commit -m \"" + message2 + "\"",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processGitCommit;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
+                }
+
+                var processGitBranch = new ProcessStartInfo     // git branch to main
+                {
+                    FileName = "git",
+                    Arguments = "branch -M main",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processGitBranch;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
+                }
+
+                var processGitRemote = new ProcessStartInfo     // git remote add
+                {
+                    FileName = "git",
+                    Arguments = "remote add origin https://github.com/PipoAT/TEST-Repo-2.git", // change to allow user to type in or copy in URL
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processGitRemote;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
+                }
+
+                var processGitPush = new ProcessStartInfo     // git push
+                {
+                    FileName = "git",
+                    Arguments = "push -u origin main",
+                    WorkingDirectory = workingDirectory,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                using (var process = new Process())
+                {
+                    process.StartInfo = processGitPush;
+                    process.Start();
+
+                    var output = process.StandardOutput.ReadToEnd();
+                    MessageBox.Show(output);
+                    var error = process.StandardError.ReadToEnd();
+                    MessageBox.Show(error);
+                }
+
+
+            }
+
+        }
+    }
+
+
+
+
+
 }
