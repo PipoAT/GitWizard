@@ -10,3 +10,4 @@
 - git merge [branch_name]
 - git add -A // git add [file_name]
 - git remote add origin [URL]
+- git commit -m "[MESSAGE]"
